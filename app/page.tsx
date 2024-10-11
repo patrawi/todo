@@ -1,8 +1,16 @@
 import Card from "@/components/Card";
+import CreateTaskDialog from "@/components/CreateTaskDialog";
 import prisma from "@/lib/prisma";
+import { currentDate } from "@/lib/utils/dateUtils";
 
 const fetchTasks = async () => {
+  const today = currentDate();
   const tasks = await prisma.task.findMany({
+    where: {
+      startTime: {
+        gte: new Date(today).toISOString(),
+      },
+    },
     include: {
       author: {
         select: {
@@ -24,13 +32,13 @@ export default async function Home() {
           <p className="text-3xl font-bold">Today&apos;s Task</p>
           <p className="text-slate-400">{date.toDateString()}</p>
         </div>
-        <button className="bg-blue-500 p-4 rounded-lg max-w-md w-full hover:bg-blue-900 text-2xl shadow-lg cursor">
-          + New Task
-        </button>
+        <CreateTaskDialog />
       </div>
-      {tasks.map((t) => {
-        return <Card task={t} key={t.id} />;
-      })}
+      <div className="flex flex-col gap-4">
+        {tasks.map((t) => {
+          return <Card task={t} key={t.id} />;
+        })}
+      </div>
     </main>
   );
 }

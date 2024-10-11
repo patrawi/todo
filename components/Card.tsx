@@ -12,13 +12,16 @@ const Card: React.FC<ICardProps> = ({ task }) => {
   const endTime = getHHMM(new Date(task.endTime));
   const { toggle, onToggle } = useToggle(false);
   return (
-    <div key={task.id} className="w-full bg-white rounded-lg p-8 shadow-2xl  ">
+    <div
+      key={task.id}
+      className="w-full bg-white rounded-lg p-8 shadow-2xl space-y-4  "
+    >
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-black">{task.title}</p>
-          <p className="text-slate-400">{task.description}</p>
+          <p className="text-black text-xl">{task.title}</p>
+          <p className="text-slate-400 text-sm">{task.description}</p>
         </div>
-        <label className="">
+        <label className="block">
           <input
             className="hidden"
             type="checkbox"
@@ -38,13 +41,13 @@ const Card: React.FC<ICardProps> = ({ task }) => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-5 text-black"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="m4.5 12.75 6 6 9-13.5"
                 />
               </svg>
@@ -52,8 +55,9 @@ const Card: React.FC<ICardProps> = ({ task }) => {
           </span>
         </label>
       </div>
-      <div className="text-black divide-y-8" />
-      <div className="flex gap-4">
+      <div className="border-t-2 divide-y-4 divide-slate-500"></div>
+
+      <div className="flex gap-4 ">
         <p className="text-slate-500">Today</p>
         <p className="text-slate-400">
           {startTime} - {endTime}
