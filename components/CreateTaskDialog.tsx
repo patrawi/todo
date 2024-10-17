@@ -12,10 +12,13 @@ import {
   Label,
   Textarea,
 } from "@headlessui/react";
-import { Task } from "@prisma/client";
+
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 interface FormElements extends HTMLFormControlsCollection {
   titleInput: HTMLInputElement;
   descriptioninput: HTMLTextAreaElement;
@@ -33,6 +36,7 @@ interface FormData {
   endTime: string;
 }
 const CreateTaskDialog = () => {
+  const router = useRouter();
   const { closeDialog, open, openDialog } = useDialog(false);
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -40,6 +44,7 @@ const CreateTaskDialog = () => {
     startTime: "",
     endTime: "",
   });
+
   const handleSubmit = async (e: React.FormEvent<TaskFormElement>) => {
     e.preventDefault();
     try {
@@ -53,21 +58,21 @@ const CreateTaskDialog = () => {
         startTime: startDateTime,
       };
 
-      await fetch("/api/task", {
+      await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-    } catch (e) {
-      console.error(e);
-    }
+      mutate("/api/tasks");
+      closeDialog();
+    } catch (e) {}
   };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    console.log(value);
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -161,8 +166,6 @@ const CreateTaskDialog = () => {
                         value={formData.startTime}
                         onChange={handleChange}
                         className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        min="09:00"
-                        max="18:00"
                         required
                       />
                     </div>
@@ -193,8 +196,6 @@ const CreateTaskDialog = () => {
                         value={formData.endTime}
                         onChange={handleChange}
                         className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        min="09:00"
-                        max="18:00"
                         required
                       />
                     </div>

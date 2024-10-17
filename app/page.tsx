@@ -1,44 +1,24 @@
-import Card from "@/components/Card";
-import CreateTaskDialog from "@/components/CreateTaskDialog";
-import prisma from "@/lib/prisma";
-import { currentDate } from "@/lib/utils/dateUtils";
+import { getSession } from "@/lib/utils/auth";
+import { type Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
-const fetchTasks = async () => {
-  const today = currentDate();
-  const tasks = await prisma.task.findMany({
-    where: {
-      startTime: {
-        gte: new Date(today).toISOString(),
-      },
-    },
-    include: {
-      author: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
-  return tasks;
+export const metadata: Metadata = {
+  title: "Root page 🌳",
 };
-export default async function Home() {
-  const tasks = await fetchTasks();
-  console.log(tasks);
-  const date = new Date();
+
+export default async function RootPage() {
   return (
-    <main className="container mx-auto py-8  relative">
-      <div className="flex justify-between w-full items-center mb-8">
-        <div>
-          <p className="text-3xl font-bold">Today&apos;s Task</p>
-          <p className="text-slate-400">{date.toDateString()}</p>
-        </div>
-        <CreateTaskDialog />
+    <div className="grid h-screen place-items-center">
+      <div className="grid gap-4 text-center">
+        <h3 className="text-2xl font-semibold">
+          Hello To my verfy first project
+        </h3>
+        <p className="text-sm">To use the app you need to sign in</p>
+        <button className="bg-white text-black hover:bg-slate-300">
+          <Link href="/api/auth/signin">Go to the sign in page</Link>
+        </button>
       </div>
-      <div className="flex flex-col gap-4">
-        {tasks.map((t) => {
-          return <Card task={t} key={t.id} />;
-        })}
-      </div>
-    </main>
+    </div>
   );
 }
