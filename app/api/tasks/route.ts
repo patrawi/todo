@@ -35,7 +35,7 @@ export async function GET() {
       },
     });
     return Response.json(tasks);
-  } catch (e) {
+  } catch {
     return Response.json({
       success: false,
       message: "Error occured while querying a task!",

@@ -8,13 +8,11 @@ import useSWR from "swr";
 const fetcher = async (url: string) => {
   const res = await fetch(url);
 
-  // If the status code is not in the range 200-299,
-  // we still try to parse and throw it.
   if (!res.ok) {
-    const error: any = new Error("An error occurred while fetching the data.");
-    // Attach extra info to the error object.
-    error.info = await res.json();
-    error.status = res.status;
+    const error: unknown = new Error(
+      "An error occurred while fetching the data."
+    );
+
     throw error;
   }
 
@@ -23,7 +21,7 @@ const fetcher = async (url: string) => {
 
 export default function HomePage() {
   const date = new Date();
-  const { data: tasks, isLoading, error } = useSWR("/api/tasks", fetcher);
+  const { data: tasks, isLoading } = useSWR("/api/tasks", fetcher);
 
   if (isLoading) {
     return <p>Loading...</p>;

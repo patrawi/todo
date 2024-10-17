@@ -14,10 +14,9 @@ import {
 } from "@headlessui/react";
 
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
+
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
 import { mutate } from "swr";
 interface FormElements extends HTMLFormControlsCollection {
   titleInput: HTMLInputElement;
@@ -36,7 +35,6 @@ interface FormData {
   endTime: string;
 }
 const CreateTaskDialog = () => {
-  const router = useRouter();
   const { closeDialog, open, openDialog } = useDialog(false);
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -65,7 +63,9 @@ const CreateTaskDialog = () => {
       });
       mutate("/api/tasks");
       closeDialog();
-    } catch (e) {}
+    } catch {
+      throw Error("failed");
+    }
   };
 
   const handleChange = (

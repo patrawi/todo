@@ -1,10 +1,8 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
 
 export default function SignOutButton() {
-  const router = useSearchParams();
   return (
     <button
       className="flex items-center bg-red-400 px-4 py-2 rounded-sm hover:bg-red-500"

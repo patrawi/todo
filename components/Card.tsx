@@ -1,8 +1,7 @@
 "use client";
 import { getHHMM } from "@/lib/utils/dateUtils";
 import { Task } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+
 import { mutate } from "swr";
 
 interface ICardProps {
@@ -29,8 +28,7 @@ const deleteTask = async (id: string): Promise<void> => {
 const Card: React.FC<ICardProps> = ({ task }) => {
   const startTime = getHHMM(new Date(task.startTime));
   const endTime = getHHMM(new Date(task.endTime));
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+
   return (
     <div
       key={task.id}

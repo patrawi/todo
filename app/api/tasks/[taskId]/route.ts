@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/utils/auth";
 
-import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
@@ -32,7 +31,7 @@ export async function PATCH(
       success: true,
       message: "The task was successfully updated",
     });
-  } catch (e) {
+  } catch {
     return Response.json({
       success: false,
       message: "Error occured while updating the task!",
@@ -41,7 +40,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextApiRequest,
+  _request: NextRequest,
   { params }: { params: { taskId: string } }
 ) {
   const session = await getServerSession(authOptions);
