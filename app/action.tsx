@@ -11,7 +11,7 @@ export async function toggle(taskId: string, isFinished: boolean) {
       data: { finished: isFinished },
     });
 
-    revalidatePath("/[username]"); // Remove the second argument
+    revalidatePath("/[username]", "page");
   } catch (e) {
     console.log(e);
   }
@@ -22,7 +22,7 @@ export async function deleteTask(taskId: string) {
     await prisma.task.delete({
       where: { id: taskId },
     });
-    revalidatePath("/[username]"); // Remove the second argument
+    revalidatePath("/[username]", "page");
   } catch (e) {
     console.log(e);
   }

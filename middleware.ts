@@ -1,27 +1,37 @@
-import { withAuth } from "next-auth/middleware";
-import { getToken } from "next-auth/jwt";
+import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
+
+import { ROOT } from "./lib/constant";
 
 export default withAuth(
-  async function middleware(req) {
-    const token = await getToken({ req });
-
+  async function middleware(req: NextRequestWithAuth) {
+    const token = req.nextauth.token;
+    console.log(req.nextUrl);
     const isAuth = !!token;
 
-    if (isAuth) {
-      Response.redirect(`${req.url}/${token.name}`);
-      // if (token.username !== req.nextUrl.pathname.slice(1)) {
-      //   return Response.redirect(new URL(`/error`, req.url));
-      // }
-      return null;
+    if (!isAuth) {
+      return Response.redirect(new URL("/api/auth/signin", req.nextUrl));
     }
-    Response.redirect(`${req.url}/`);
+    if (isAuth && req.nextUrl.pathname === ROOT) {
+      return Response.redirect(new URL(`/${token.name}`, req.nextUrl));
+    }
+
     return null;
   },
+
   {
+    pages: {
+      signIn: "/api/auth/signin",
+    },
+
     callbacks: {
-      async authorized() {
-        return true; // without it the code above doesn't work
+      authorized({ token }) {
+        if (token) return true;
+        return false;
       },
     },
   }
 );
+
+export const config = {
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
+};
