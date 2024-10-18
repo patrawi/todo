@@ -1,29 +1,11 @@
 "use client";
+import { deleteTask, toggle } from "@/app/action";
 import { getHHMM } from "@/lib/utils/dateUtils";
 import { Task } from "@prisma/client";
-
-import { mutate } from "swr";
 
 interface ICardProps {
   task: Task;
 }
-
-const updateTask = async (id: string, finished: boolean): Promise<void> => {
-  await fetch(`/api/tasks/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({
-      isFinished: finished,
-    }),
-  });
-  mutate(`/api/tasks`);
-};
-
-const deleteTask = async (id: string): Promise<void> => {
-  await fetch(`/api/tasks/${id}`, {
-    method: "DELETE",
-  });
-  mutate("/api/tasks");
-};
 
 const Card: React.FC<ICardProps> = ({ task }) => {
   const startTime = getHHMM(new Date(task.startTime));
@@ -39,13 +21,14 @@ const Card: React.FC<ICardProps> = ({ task }) => {
           <p className="text-black text-xl">{task.title}</p>
           <p className="text-slate-400 text-sm">{task.description}</p>
         </div>
+
         <label className="block">
           <input
             className="hidden"
             type="checkbox"
             id="check-round01"
-            onClick={() => {
-              updateTask(task.id, task.finished);
+            onChange={(e) => {
+              toggle(task.id, e.target.checked);
             }}
           />
           <span

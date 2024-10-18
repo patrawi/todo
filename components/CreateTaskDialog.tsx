@@ -14,10 +14,10 @@ import {
 } from "@headlessui/react";
 
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
-import { mutate } from "swr";
 interface FormElements extends HTMLFormControlsCollection {
   titleInput: HTMLInputElement;
   descriptioninput: HTMLTextAreaElement;
@@ -35,6 +35,7 @@ interface FormData {
   endTime: string;
 }
 const CreateTaskDialog = () => {
+  const router = useRouter();
   const { closeDialog, open, openDialog } = useDialog(false);
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -61,7 +62,7 @@ const CreateTaskDialog = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      mutate("/api/tasks");
+      router.refresh();
       closeDialog();
     } catch {
       throw Error("failed");
